@@ -290,52 +290,8 @@ export const appRouter = router({
           }
         }
         return results;
-      }),    
-    updateScore: adminProcedure
-      .input(z.object({
-        matchId: z.number(),
-        homeScore: z.number(),
-        awayScore: z.number(),
-      }))
-      .mutation(async ({ input }) => {
-        // Actualizar el marcador del partido
-        return await db.updateMatch(input.matchId, {
-          homeScore: input.homeScore,
-          awayScore: input.awayScore,
-          status: "completed",
-        });
       }),
-    
-    bulkCreateStats: adminProcedure
-      .input(z.object({
-        matchId: z.number(),
-        stats: z.array(z.object({
-          playerId: z.number(),
-          goals: z.number().optional(),
-          points: z.number().optional(),
-          assists: z.number().optional(),
-          yellowCards: z.number().optional(),
-          redCards: z.number().optional(),
-        })),
-      }))
-      .mutation(async ({ input }) => {
-        // Guardar múltiples estadísticas de jugadores en un partido
-        const results = [];
-        for (const stat of input.stats) {
-          if (stat.goals || stat.points || stat.assists || stat.yellowCards || stat.redCards) {
-            const result = await db.createPlayerStat({
-              playerId: stat.playerId,
-              matchId: input.matchId,
-              goals: stat.goals || 0,
-              points: stat.points || 0,
-              assists: stat.assists || 0,
-            });
-            results.push(result);
-          }
-        }
-        return results;
-      }),
-  },
+  }),
 
   // Cheerleading rankings
   cheerleading: router({

@@ -290,9 +290,7 @@ export const appRouter = router({
           }
         }
         return results;
-      }),
-  },
-    
+      }),    
     updateScore: adminProcedure
       .input(z.object({
         matchId: z.number(),

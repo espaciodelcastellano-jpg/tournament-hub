@@ -1,0 +1,31 @@
+    
+    bulkCreate: adminProcedure
+      .input(z.object({
+        players: z.array(z.object({
+          name: z.string().min(1),
+          number: z.number().optional(),
+          position: z.string().optional(),
+          teamId: z.number().optional(),
+          sport: z.enum(["soccer", "basketball", "cheerleading"]),
+        })),
+      }))
+      .mutation(async ({ input }) => {
+        let created = 0;
+        let failed = 0;
+        
+        for (const player of input.players) {
+          try {
+            await db.createPlayer({
+              name: player.name,
+              teamId: player.teamId || 0,
+              jerseyNumber: player.number?.toString(),
+              position: player.position,
+            });
+            created++;
+          } catch (error) {
+            failed++;
+          }
+        }
+        
+        return { created, failed, total: input.players.length };
+      }),
